@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected float speed = 5;
     [SerializeField] protected float jumpForce = 7.5f;
     private Rigidbody2D m_rigidbody;
+    private Collider2D m_collider;
     private int score = 0;
     private bool isGrounded = false;
 
@@ -14,6 +15,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         m_rigidbody = this.GetComponent<Rigidbody2D>();
+        m_collider = this.GetComponent<Collider2D>();
         //QualitySettings.vSyncCount = 0;   // Turns off v-sync
         //Application.targetFrameRate = 30; // Forces your game to run at a specific framerate - good for testing frame dependency
     }
@@ -133,10 +135,18 @@ public class Player : MonoBehaviour
     // Gets called on every frame that we continue to physically touch a solid collider
     void OnCollisionStay2D(Collision2D collision)
     {
-        // As long as we're touching something that's tagged as ground, set our isGrounded state to true
+        // As long as we're touching something that's tagged as ground, check to see if our feet are touching it
         if (collision.collider.CompareTag("Ground"))
         {
-            isGrounded = true;
+            // We'll use a downward raycast to ensure we only set isGrounded to true if our feet touch something tagged ground
+            //  This'll avoid complications where we say isGrounded = true if we collide with something tagged ground from the side or below
+            Vector2 feetPosition = new Vector2(this.transform.position.x, m_collider.bounds.min.y);
+            RaycastHit2D hitInfo = Physics2D.Raycast(feetPosition, Vector2.down, 0.1f);
+            Debug.DrawRay(feetPosition, Vector2.down * 0.1f, Color.green);
+            if (hitInfo && hitInfo.collider.CompareTag("Ground"))
+            {
+                isGrounded = true;
+            }
         }
     }
 
