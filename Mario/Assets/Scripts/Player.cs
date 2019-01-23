@@ -140,10 +140,10 @@ public class Player : MonoBehaviour
         {
             // We'll use a downward raycast to ensure we only set isGrounded to true if our feet touch something tagged ground
             //  This'll avoid complications where we say isGrounded = true if we collide with something tagged ground from the side or below
-            Vector2 feetPosition = new Vector2(this.transform.position.x, m_collider.bounds.min.y);
-            RaycastHit2D hitInfo = Physics2D.Raycast(feetPosition, Vector2.down, 0.1f);
-            Debug.DrawRay(feetPosition, Vector2.down * 0.1f, Color.green);
-            if (hitInfo && hitInfo.collider.CompareTag("Ground"))
+            Vector2 feetPosition = new Vector2(this.transform.position.x, m_collider.bounds.min.y); // bounds.min.y returns the position of the lowest point on the collider
+            RaycastHit2D hitInfo = Physics2D.Raycast(feetPosition, Vector2.down, 0.1f); // We'll shoot a very short (0.1f units) raycast downward
+            Debug.DrawRay(feetPosition, Vector2.down * 0.1f, Color.green);  // Draw a short line to visualize the ray as well
+            if (hitInfo && hitInfo.collider.CompareTag("Ground"))   // If we hit something, and it's tagged as ground, we can finally set isGrounded = true
             {
                 isGrounded = true;
             }
