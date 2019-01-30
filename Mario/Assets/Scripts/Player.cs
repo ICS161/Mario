@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
@@ -8,8 +9,10 @@ public class Player : MonoBehaviour
     [SerializeField] protected float jumpForce = 7.5f;
     private Rigidbody2D m_rigidbody;
     private Collider2D m_collider;
-    private int score = 0;
+    public int score = 0;
     private bool isGrounded = false;
+
+    public UnityEvent onCoinPickup;
 
     // Start is called before the first frame update
     void Start()
@@ -120,6 +123,7 @@ public class Player : MonoBehaviour
             Destroy(collider.gameObject);
             score++;
             Debug.Log(score);
+            onCoinPickup.Invoke();
         }
     }
 
