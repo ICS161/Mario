@@ -3,20 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public class IntUnityEvent : UnityEvent<int> { }
+
 public class Player : MonoBehaviour
 {
+    public GameObject pelletPrefab;
     [SerializeField] protected float speed = 5;
     [SerializeField] protected float jumpForce = 7.5f;
     private Rigidbody2D m_rigidbody;
     private Collider2D m_collider;
     public int score = 0;
+    [System.NonSerialized] public int dummyInt = 5;
     private bool isGrounded = false;
 
-    public UnityEvent onCoinPickup;
+    public delegate void IntDelegate(int score);
+    public event IntDelegate onCoinPickup = delegate { };
+    //public IntUnityEvent onCoinPickup = new IntUnityEvent();
+    //[System.NonSerialized] public UnityEvent onCoinPickup;
 
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(dummyInt);
         m_rigidbody = this.GetComponent<Rigidbody2D>();
         m_collider = this.GetComponent<Collider2D>();
         //QualitySettings.vSyncCount = 0;   // Turns off v-sync
@@ -78,21 +86,25 @@ public class Player : MonoBehaviour
 
     void Shoot()
     {
-        // A Raycast is an invisible line that is shot in a given direction to check for colliders
-        // Similar to "hitscan" mechanics in first-person shooters
-        // A RaycastHit2D is returned which is basically an object that contains some info about what was hit
-        RaycastHit2D hitInfo = Physics2D.Raycast(this.transform.position, Vector2.right);   // This will shoot a ray originating from the Player's position and extending infinitely to the right
-        Debug.DrawRay(this.transform.position, Vector2.right*9001, Color.green, 0.1f);  // We can use Debug.DrawRay to visualize what the ray looks like. (Multiply direction by a very large number
-                                                                                        //  to make the drawn ray longer.
-                                                                                        // Make sure Gizmos are enabled in your Scene and Game view to see it.
-        //RaycastHit2D hitInfo = Physics2D.Raycast(this.transform.position, Vector2.right, 1f); // We can add a 3rd parameter to limit the length of the ray, so it doesn't extend infinitely
+        GameObject newPellet = Instantiate(pelletPrefab, this.transform.position, Quaternion.identity);
+        newPellet.GetComponent<Rigidbody2D>().velocity = Vector2.right;
+        //// A Raycast is an invisible line that is shot in a given direction to check for colliders
+        //// Similar to "hitscan" mechanics in first-person shooters
+        //// A RaycastHit2D is returned which is basically an object that contains some info about what was hit
+        //RaycastHit2D hitInfo = Physics2D.Raycast(this.transform.position, Vector2.right);   // This will shoot a ray originating from the Player's position and extending infinitely to the right
+        //Debug.DrawRay(this.transform.position, Vector2.right*9001, Color.green, 0.1f);  // We can use Debug.DrawRay to visualize what the ray looks like. (Multiply direction by a very large number
+        //                                                                                //  to make the drawn ray longer.
+        //                                                                                // Make sure Gizmos are enabled in your Scene and Game view to see it.
+        ////RaycastHit2D hitInfo = Physics2D.Raycast(this.transform.position, Vector2.right, 1f); // We can add a 3rd parameter to limit the length of the ray, so it doesn't extend infinitely
 
-        // If we hit something, and the thing we hit happened to be tagged Enemy, destroy it.
-        if (hitInfo && hitInfo.collider.CompareTag("Enemy"))    // if (hitInfo) is a null-check. It'll check if we hit something first before we even check if that thing is tagged Enemy.
-        {
-            //Debug.Log(hitInfo.collider.name);
-            Destroy(hitInfo.collider.gameObject);
-        }
+        //// If we hit something, and the thing we hit happened to be tagged Enemy, destroy it.
+        //if (hitInfo && hitInfo.collider.CompareTag("Enemy"))    // if (hitInfo) is a null-check. It'll check if we hit something first before we even check if that thing is tagged Enemy.
+        //{
+        //    //Debug.Log(hitInfo.collider.name);
+        //    Destroy(hitInfo.collider.gameObject);
+        //}
+
+
     }
 
     void Jump()
@@ -122,8 +134,9 @@ public class Player : MonoBehaviour
         {
             Destroy(collider.gameObject);
             score++;
-            Debug.Log(score);
-            onCoinPickup.Invoke();
+            //Debug.Log(score);
+            //onCoinPickup.Invoke(score);
+            onCoinPickup(score);
         }
     }
 

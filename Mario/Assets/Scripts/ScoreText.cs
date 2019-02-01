@@ -11,8 +11,10 @@ public class ScoreText : MonoBehaviour
     void Start()
     {
         scoreText = this.GetComponent<TextMeshProUGUI>();
-        playerComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        playerComponent.onCoinPickup.AddListener(OnCoinPickupListener);
+        //playerComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        playerComponent = GameObject.Find("Player").GetComponent<Player>();
+        //playerComponent.onCoinPickup.AddListener(OnCoinPickupListener);
+        playerComponent.onCoinPickup += OnCoinPickupListener;
     }
 
     // Update is called once per frame
@@ -21,8 +23,9 @@ public class ScoreText : MonoBehaviour
         //scoreText.text = string.Format("Score: {0}", playerComponent.score);
     }
 
-    void OnCoinPickupListener()
+    void OnCoinPickupListener(int score)
     {
-        scoreText.text = string.Format("Score: {0}", playerComponent.score);
+        //Debug.Log(score);
+        scoreText.text = string.Format("Score: {0}", score);
     }
 }
