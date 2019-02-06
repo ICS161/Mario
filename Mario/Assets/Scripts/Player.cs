@@ -88,6 +88,7 @@ public class Player : MonoBehaviour
     {
         GameObject newPellet = Instantiate(pelletPrefab, this.transform.position, Quaternion.identity);
         newPellet.GetComponent<Rigidbody2D>().velocity = Vector2.right;
+        Physics2D.IgnoreCollision(m_collider, newPellet.GetComponent<Collider2D>());
         //// A Raycast is an invisible line that is shot in a given direction to check for colliders
         //// Similar to "hitscan" mechanics in first-person shooters
         //// A RaycastHit2D is returned which is basically an object that contains some info about what was hit
