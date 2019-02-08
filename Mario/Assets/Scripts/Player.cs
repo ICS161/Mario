@@ -7,19 +7,26 @@ public class IntUnityEvent : UnityEvent<int> { }
 
 public class Player : MonoBehaviour
 {
+    public static Player instance;
+
     public GameObject pelletPrefab;
     [SerializeField] protected float speed = 5;
     [SerializeField] protected float jumpForce = 7.5f;
     private Rigidbody2D m_rigidbody;
     private Collider2D m_collider;
-    public int score = 0;
+    //public int score = 0;
     [System.NonSerialized] public int dummyInt = 5;
     private bool isGrounded = false;
 
-    public delegate void IntDelegate(int score);
-    public event IntDelegate onCoinPickup = delegate { };
-    //public IntUnityEvent onCoinPickup = new IntUnityEvent();
+    //public delegate void IntDelegate(int score);
+    //public event IntDelegate onCoinPickup = delegate { };
+    public UnityEvent onCoinPickup;
     //[System.NonSerialized] public UnityEvent onCoinPickup;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -134,10 +141,8 @@ public class Player : MonoBehaviour
         if (collider.CompareTag("Coin"))    // CompareTag is more efficient than doing collider.tag == "Coin"
         {
             Destroy(collider.gameObject);
-            score++;
-            //Debug.Log(score);
-            //onCoinPickup.Invoke(score);
-            onCoinPickup(score);
+            //score++;
+            onCoinPickup.Invoke();
         }
     }
 

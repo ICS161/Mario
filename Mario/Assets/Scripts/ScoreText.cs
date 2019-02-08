@@ -5,16 +5,19 @@ using TMPro;
 
 public class ScoreText : MonoBehaviour
 {
-    Player playerComponent;
+    //Player playerComponent;
     TextMeshProUGUI scoreText;
     // Start is called before the first frame update
     void Start()
     {
         scoreText = this.GetComponent<TextMeshProUGUI>();
         //playerComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        playerComponent = GameObject.Find("Player").GetComponent<Player>();
+        //playerComponent = GameObject.Find("Player").GetComponent<Player>();
         //playerComponent.onCoinPickup.AddListener(OnCoinPickupListener);
-        playerComponent.onCoinPickup += OnCoinPickupListener;
+        //playerComponent = Player.instance;
+        //playerComponent.onCoinPickup.AddListener(OnCoinPickupListener);
+
+        LevelManager.instance.onScoreUpdate.AddListener(UpdateScore);
     }
 
     // Update is called once per frame
@@ -23,9 +26,9 @@ public class ScoreText : MonoBehaviour
         //scoreText.text = string.Format("Score: {0}", playerComponent.score);
     }
 
-    void OnCoinPickupListener(int score)
+    void UpdateScore(int newScore)
     {
         //Debug.Log(score);
-        scoreText.text = string.Format("Score: {0}", score);
+        scoreText.text = string.Format("Score: {0}", newScore);
     }
 }
