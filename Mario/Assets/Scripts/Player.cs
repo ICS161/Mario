@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Public variables
     /// </summary>
-    public static Player instance;
+    //public static Player instance;
 
     public GameObject pelletPrefab;
     public UnityEvent onCoinPickup;
@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     /// </summary>
     private Rigidbody2D m_rigidbody;
     private Collider2D m_collider;
+    private Animator m_animator;
+    private SpriteRenderer m_spriteRenderer;
 
     [SerializeField] protected float speed = 5;
     [SerializeField] protected float jumpForce = 7.5f;
@@ -28,7 +30,8 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        m_animator = this.GetComponent<Animator>();
+        m_spriteRenderer = this.GetComponent<SpriteRenderer>();
     }
 
     // Start is called before the first frame update
@@ -59,10 +62,20 @@ public class Player : MonoBehaviour
     void Move()
     {
         float movementModifier = Input.GetAxis("Horizontal"); // GetAxisRaw if you don't want a gradual change
+        if (movementModifier > 0)
+        {
+            m_spriteRenderer.flipX = false;
+        }
+        else if (movementModifier < 0)
+        {
+            m_spriteRenderer.flipX = true;
+        }
 
         // But because we have a Rigidbody, we should adhere to Physics and set the Rigidbody's velocity instead
         Vector2 currentVelocity = m_rigidbody.velocity;
         m_rigidbody.velocity = new Vector2(movementModifier * speed, currentVelocity.y);
+
+        m_animator.SetFloat("Speed", Mathf.Abs(movementModifier * speed));
     }
 
     // Get's called on the exact frame that we touch a trigger

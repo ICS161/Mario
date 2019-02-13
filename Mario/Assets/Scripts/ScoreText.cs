@@ -10,6 +10,8 @@ public class ScoreText : MonoBehaviour
     {
         scoreText = this.GetComponent<TextMeshProUGUI>();
         LevelManager.instance.onScoreUpdate.AddListener(UpdateScore);
+
+        UpdateScore(LevelManager.instance.score);
     }
 
     void UpdateScore(int newScore)
