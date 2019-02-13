@@ -27,13 +27,6 @@ public class LevelManager : MonoBehaviour
         onScoreUpdate.Invoke(newScore);
     }
 
-    //void IncrementScore()
-    //{
-    //    UpdateScore(++score);
-    //}
-
-    // AKA : () => UpdateScore(++score);
-
     void DecrementScore()
     {
         UpdateScore(--score);
